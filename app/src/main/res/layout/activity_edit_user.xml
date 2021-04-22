@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditUser">
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_gravity="left">
+        <ImageView
+            android:id="@+id/user_image"
+            android:src="@drawable/knight_avatar"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="80dp"
+            />
+
+        <Spinner
+            android:id="@+id/picture_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:layout_gravity="bottom"/>
+    </TableRow>
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_gravity="left">
+        <TextView
+            android:id="@+id/display_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="180dp"
+            android:text="Name:" />
+        <EditText
+            android:id="@+id/edit_name"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="180dp"
+            android:hint="name" />
+
+    </TableRow>
+
+    <Button
+        android:id="@+id/save_and_return"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="140dp"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</TableLayout>

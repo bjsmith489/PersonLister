@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PersonListerFinal</string>
+    <string name="user">User</string>
+    <string name="url">https://jsonplaceholder.typicode.com/users</string>
+</resources>
