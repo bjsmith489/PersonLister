@@ -46,6 +46,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
                 .centerCrop()
                 .placeholder(R.drawable.temp_image).into(holder.image);
         holder.name.setText(user.getName());
+        user.setImage(R.drawable.temp_image);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

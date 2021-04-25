@@ -64,6 +64,7 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
         setUserInformation();
     }
     public void setUsers() {
+        Log.v("TAG:  ",   "---------------------------");
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(getString(R.string.url)).build();
@@ -109,6 +110,7 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+
     }
     @Override
     public void onClick(View v) {
@@ -122,6 +124,11 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        startService(new Intent(this, NotificationSender.class));
+    }
     private void userEdit() {
         startActivity(new Intent(this, EditUser.class));
     }

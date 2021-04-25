@@ -1,21 +1,19 @@
 package com.example.personlisterfinal;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 public class PersonDisplayScreen extends AppCompatActivity implements View.OnClickListener{
 
     Button displayUsersReturnButton;
-    TextView nameTextView;
-    TextView usernameTextView;
-    TextView emailTextView;
-    TextView addressTextView;
+    boolean isDescriptionFragmentDisplayed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,24 +21,45 @@ public class PersonDisplayScreen extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_person_display_screen);
 
         displayUsersReturnButton = findViewById(R.id.return_button);
-        nameTextView = findViewById(R.id.textView4);
-        usernameTextView = findViewById(R.id.textView3);
-        emailTextView = findViewById(R.id.textView2);
-        addressTextView = findViewById(R.id.textView5);
-
         displayUsersReturnButton.setOnClickListener(this);
+
+        displayDescriptionFragment();
         setUserInfo();
     }
 
-    private void setUserInfo() {
+    public void displayDescriptionFragment(){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        PersonDisplayDescriptionFragment pddf = PersonDisplayDescriptionFragment.newInstance();
+        Bundle bundle = setUserInfo();
+        pddf.setArguments(bundle);
+        ft.add(R.id.person_description_fragment, pddf);
+        isDescriptionFragmentDisplayed = true;
+        ft.commit();
+    }
+
+    public void closeDescriptionFragment(){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        PersonDisplayDescriptionFragment descriptionFragment = (PersonDisplayDescriptionFragment) fm
+                .findFragmentById(R.id.person_description_fragment);
+        if (descriptionFragment != null) {
+            // Create and commit the transaction to remove the fragment.
+            FragmentTransaction fragmentTransaction =
+                    fm.beginTransaction();
+            fragmentTransaction.remove(descriptionFragment).commit();
+        }
+        isDescriptionFragmentDisplayed = false;
+    }
+    private Bundle setUserInfo() {
+        Bundle bundle = new Bundle();
         User user = getIntent().getParcelableExtra("user");
         if(user != null) {
-            nameTextView.setText(user.getName());
-            usernameTextView.setText(user.getUserName());
-            emailTextView.setText(user.getEmail());
-            addressTextView.setText((user.getAddress().toString()));
+            bundle.putString("name",user.getName());
+            bundle.putString("username", user.getUserName());
+            bundle.putString("email",user.getEmail());
         }
-        Toast.makeText(this, user.toString(), Toast.LENGTH_LONG).show();
+        return bundle;
     }
 
 
@@ -50,7 +69,14 @@ public class PersonDisplayScreen extends AppCompatActivity implements View.OnCli
             case R.id.return_button:
                 returnToDisplayScreen();
                 break;
+            case R.id.view_address_button:
+                viewGoogleMap();
+                break;
         }
+    }
+
+    private void viewGoogleMap() {
+
     }
 
     private void returnToDisplayScreen() {

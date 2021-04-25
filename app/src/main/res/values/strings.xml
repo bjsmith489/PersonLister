@@ -2,4 +2,6 @@
     <string name="app_name">PersonListerFinal</string>
     <string name="user">User</string>
     <string name="url">https://jsonplaceholder.typicode.com/users</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

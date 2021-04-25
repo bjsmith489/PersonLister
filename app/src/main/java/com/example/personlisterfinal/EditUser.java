@@ -62,7 +62,6 @@ public class EditUser extends AppCompatActivity implements View.OnClickListener,
             editor.putString("name", nameEditText.getText().toString());
         }
         if(choice == 1){
-            Log.v("TAG:  ",   "---------------------------");
             editor.putInt("picture", pictures[dropdown.getSelectedItemPosition()]);
         }
         editor.commit();

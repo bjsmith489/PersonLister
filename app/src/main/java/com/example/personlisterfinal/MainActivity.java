@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     SignInButton googleSignInButton;
     int RC_SIGN_IN = 1001;
     boolean createNotification;
+    ImageView applicationLogo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +30,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         googleSignInButton = findViewById(R.id.sign_in_button);
         googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
+        applicationLogo = findViewById(R.id.application_image);
 
+        applicationLogo.setImageResource(R.drawable.rising_sun_logo);
         googleSignInButton.setOnClickListener(this);
     }
 
@@ -36,11 +40,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         updateUI(account);
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        startService(new Intent(this, NotificationSender.class));
     }
     private void updateUI(GoogleSignInAccount account) {
         if(account != null){
