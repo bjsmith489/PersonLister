@@ -14,10 +14,10 @@ public class User implements Parcelable {
     protected User(Parcel in) {
         id = in.readInt();
         image = in.readInt();
+        address = in.readParcelable(Address.class.getClassLoader());
         name = in.readString();
         username = in.readString();
         email = in.readString();
-        address = in.readParcelable(Address.class.getClassLoader());
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -48,10 +48,10 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeInt(image);
+        dest.writeParcelable(address, flags);
         dest.writeString(name);
         dest.writeString(username);
         dest.writeString(email);
-        dest.writeParcelable(address, flags);
     }
 
     public static class Address implements Parcelable{
@@ -114,12 +114,12 @@ public class User implements Parcelable {
     }
 
     public static class Geo implements Parcelable{
-        private String lat;
-        private String lng;
+        private Double lat;
+        private Double lng;
 
         protected Geo(Parcel in) {
-            lat = in.readString();
-            lng = in.readString();
+            lat = in.readDouble();
+            lng = in.readDouble();
         }
 
         public static final Creator<Geo> CREATOR = new Creator<Geo>() {
@@ -134,8 +134,8 @@ public class User implements Parcelable {
             }
         };
 
-        public String getLat() { return lat; }
-        public String getLng() { return lng; }
+        public Double getLat() { return lat; }
+        public Double getLng() { return lng; }
 
         @Override
         public String toString() {
@@ -152,8 +152,8 @@ public class User implements Parcelable {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(lat);
-            dest.writeString(lng);
+            dest.writeDouble(lat);
+            dest.writeDouble(lng);
         }
     }
 

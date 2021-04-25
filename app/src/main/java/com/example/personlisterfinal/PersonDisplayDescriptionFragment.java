@@ -36,7 +36,7 @@ public class PersonDisplayDescriptionFragment extends Fragment {
         nameTextView.setText(name);
         usernameTextView.setText(username);
         emailTextView.setText(email);
-        
+
         return view;
     }
 
