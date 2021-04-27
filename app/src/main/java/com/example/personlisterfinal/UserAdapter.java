@@ -1,8 +1,10 @@
 package com.example.personlisterfinal;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.media.session.PlaybackState;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
@@ -39,12 +42,21 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         // set the data in items
+        PicassoManager picassoManager = new PicassoManager(context.getApplicationContext(),
+                "imageDir",
+                "person_image_"+position);
+        File imageFile = picassoManager.loadImageFile();
+        String imageFilePath= imageFile.getPath();
         User user = userList[position];
-        Picasso.get()
-                .load("https://robohash.org/"+position+"?set=set4")
-                .resize(500, 500)
-                .centerCrop()
-                .placeholder(R.drawable.temp_image).into(holder.image);
+        if(!imageFile.exists()){
+            Picasso.get()
+                    .load("https://robohash.org/"+position+"?set=set4")
+                    .resize(500, 500)
+                    .centerCrop()
+                    .placeholder(R.drawable.temp_image).into(
+                    picassoManager.picassoImageTarget());
+        }
+        Picasso.get().load(imageFile).into(holder.image);
         holder.name.setText(user.getName());
         user.setImage(R.drawable.temp_image);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +64,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
             public void onClick(View view) {
                 // Directs to PersonDisplayScreen to display the holder's information
                 Intent personDisplayIntent = new Intent(context, PersonDisplayScreen.class);
-
+                personDisplayIntent.putExtra("imageFilePath", imageFilePath);
                 personDisplayIntent.putExtra("user", user);
                 context.startActivity(personDisplayIntent);
             }

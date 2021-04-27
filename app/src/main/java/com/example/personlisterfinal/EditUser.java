@@ -2,6 +2,7 @@ package com.example.personlisterfinal;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,18 +22,23 @@ public class EditUser extends AppCompatActivity implements View.OnClickListener,
     ImageView pictureImageView;
     Spinner dropdown;
     Integer[] pictures = new Integer[]{R.drawable.knight_avatar, R.drawable.ninja_avatar, R.drawable.rainbow_dash_avatar};
-    String[] names = new String[]{"Knight", "Ninja", "Rainbow Dash"};
-    int choice;
+    String[] names = new String[]{"No Change","Knight", "Ninja", "Rainbow Dash"};
+    boolean spinnerOptionSelected = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("userSharedPreference", MODE_PRIVATE);
         returnButton = findViewById(R.id.save_and_return);
         nameEditText = findViewById(R.id.edit_name);
         pictureImageView = findViewById(R.id.user_image);
 
+        int picture = sharedPreferences.getInt("picture", R.drawable.knight_avatar);
+        pictureImageView.setImageResource(picture);
         returnButton.setOnClickListener(this);
 
         //get the spinner from the xml.
@@ -61,8 +67,8 @@ public class EditUser extends AppCompatActivity implements View.OnClickListener,
         if(!"".equals(nameEditText.getText().toString())){
             editor.putString("name", nameEditText.getText().toString());
         }
-        if(choice == 1){
-            editor.putInt("picture", pictures[dropdown.getSelectedItemPosition()]);
+        if(spinnerOptionSelected){
+            editor.putInt("picture", pictures[dropdown.getSelectedItemPosition()-1]);
         }
         editor.commit();
         startActivity(new Intent(this, ListUsers.class));
@@ -72,20 +78,24 @@ public class EditUser extends AppCompatActivity implements View.OnClickListener,
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch(position){
             case 0:
-                pictureImageView.setImageResource(pictures[0]);
                 break;
             case 1:
-                pictureImageView.setImageResource(pictures[1]);
+                spinnerOptionSelected = true;
+                pictureImageView.setImageResource(pictures[0]);
                 break;
             case 2:
+                spinnerOptionSelected = true;
+                pictureImageView.setImageResource(pictures[1]);
+                break;
+            case 3:
+                spinnerOptionSelected = true;
                 pictureImageView.setImageResource(pictures[2]);
                 break;
         }
-        choice = 1;
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        choice = 0;
+        spinnerOptionSelected = false;
     }
 }

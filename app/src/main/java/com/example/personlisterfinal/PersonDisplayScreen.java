@@ -5,16 +5,22 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import com.google.android.gms.maps.MapFragment;
 
+import java.io.File;
+
 public class PersonDisplayScreen extends AppCompatActivity implements View.OnClickListener{
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     Button displayUsersReturnButton;
     Button displayMapSwitchButton;
+
     boolean isDescriptionFragmentDisplayed = true;
 
     @Override
@@ -78,19 +84,30 @@ public class PersonDisplayScreen extends AppCompatActivity implements View.OnCli
     private Bundle setUserInfo() {
         Bundle bundle = new Bundle();
         User user = getIntent().getParcelableExtra("user");
+        String imageFilePath = getIntent().getStringExtra("imageFilePath");
+        System.out.println(imageFilePath);
+
         if(user != null) {
             bundle.putString("name",user.getName());
             bundle.putString("username", user.getUserName());
             bundle.putString("email",user.getEmail());
+            bundle.putString("imageFilePath", imageFilePath);
             bundle.putDouble("lat", user.getAddress().getGeo().getLat());
             bundle.putDouble("lng", user.getAddress().getGeo().getLng());
         }
         return bundle;
     }
 
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        closeMapFragment();
+//        closeDescriptionFragment();
+//    }
 
     @Override
     public void onClick(View v) {
+
         switch(v.getId()){
             case R.id.return_button:
                 returnToDisplayScreen();
@@ -110,10 +127,6 @@ public class PersonDisplayScreen extends AppCompatActivity implements View.OnCli
                 }
                 break;
         }
-    }
-
-    private void viewGoogleMap() {
-
     }
 
     private void returnToDisplayScreen() {
