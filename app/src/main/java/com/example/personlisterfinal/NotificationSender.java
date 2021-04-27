@@ -17,9 +17,25 @@ public class NotificationSender extends Service {
     public static final String CHANNEL_ID = "CHANNEL_RETURN_TO_APP";
     @Override
     public void onCreate() {
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+       super.onCreate();
+    }
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId){
+        super.onStartCommand(intent,flags,startId);
+        Bundle bundle = intent.getExtras();
+        Intent resultIntent = getPreviousIntent(bundle.getString("previous_activity"));
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                resultIntent,
+                0);
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_launcher_background)
@@ -42,16 +58,29 @@ public class NotificationSender extends Service {
             notificationChannel.enableVibration( true ) ;
             notificationChannel.setVibrationPattern( new long []{ 100 , 200 , 300 , 400 , 500 , 400 , 300 , 200 , 400 }) ;
             builder.setChannelId( CHANNEL_ID ) ;
-            assert mNotificationManager != null;
             mNotificationManager.createNotificationChannel(notificationChannel) ;
         }
-        assert mNotificationManager != null;
         mNotificationManager.notify(( int ) System. currentTimeMillis (), builder.build()) ;
+        return flags;
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public Intent getPreviousIntent(String id){
+        final String LIST_USERS_ID = "ListUsers";
+        final String EDIT_USER_ID = "EditUser";
+        final String PERSON_DISPLAY_ID = "PersonDisplayScreen";
+        Intent intent = new Intent(this, ListUsers.class);
+
+        switch(id){
+            case LIST_USERS_ID:
+                intent = new Intent(this, ListUsers.class);
+                break;
+            case EDIT_USER_ID:
+                intent = new Intent(this, EditUser.class);
+                break;
+            case PERSON_DISPLAY_ID:
+                intent = new Intent(this, PersonDisplayScreen.class);
+                break;
+        }
+        return intent;
     }
 }

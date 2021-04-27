@@ -29,6 +29,7 @@ public class PersonDisplayDescriptionFragment extends Fragment implements View.O
     public static PersonDisplayDescriptionFragment newInstance() {
         return new PersonDisplayDescriptionFragment();
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){

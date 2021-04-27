@@ -3,6 +3,10 @@ package com.example.personlisterfinal;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +19,7 @@ import com.google.android.gms.maps.MapFragment;
 
 import java.io.File;
 
-public class PersonDisplayScreen extends AppCompatActivity implements View.OnClickListener{
+public class PersonDisplayScreen extends AppCompatActivity implements View.OnClickListener, LifecycleObserver {
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     Button displayUsersReturnButton;
@@ -27,6 +31,8 @@ public class PersonDisplayScreen extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_display_screen);
+
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         displayMapSwitchButton = findViewById(R.id.display_map_switch_button);
         displayUsersReturnButton = findViewById(R.id.return_button);
@@ -98,12 +104,12 @@ public class PersonDisplayScreen extends AppCompatActivity implements View.OnCli
         return bundle;
     }
 
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        closeMapFragment();
-//        closeDescriptionFragment();
-//    }
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onEnterBackground() {
+        Intent intent = new Intent(this, NotificationSender.class);
+        intent.putExtra("previous_activity", "PersonDisplayScreen");
+        startService(intent);
+    }
 
     @Override
     public void onClick(View v) {

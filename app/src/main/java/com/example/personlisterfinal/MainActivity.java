@@ -1,6 +1,8 @@
 package com.example.personlisterfinal;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +23,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "GoogSgnFail";
     SignInButton googleSignInButton;
     int RC_SIGN_IN = 1001;
-    boolean createNotification;
     ImageView applicationLogo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         applicationLogo.setImageResource(R.drawable.rising_sun_logo);
         googleSignInButton.setOnClickListener(this);
+
     }
 
     public void onStart() {
@@ -44,8 +46,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateUI(GoogleSignInAccount account) {
         if(account != null){
             Intent listUsersIntent = new Intent(this, ListUsers.class);
-            //Todo: notification flag
-            createNotification = false;
             startActivity(listUsersIntent);
         }
     }
@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             updateUI(null);
         }
     }
-
     //   815984037062-no98sa30oa8gi87c12ilso2jeh3qn5ub.apps.googleusercontent.com
     //    g72au1KIFmyWIL5M3ovYGnBC
 }

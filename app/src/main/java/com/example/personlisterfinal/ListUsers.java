@@ -1,5 +1,6 @@
 package com.example.personlisterfinal;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Image;
@@ -15,6 +16,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,7 +42,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ListUsers extends AppCompatActivity implements View.OnClickListener {
+public class ListUsers extends AppCompatActivity implements View.OnClickListener , LifecycleObserver {
     private Gson gson = new Gson();
     private Button logoutButton;
     private GoogleSignInClient mGoogleSignInClient;
@@ -48,6 +55,8 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_users);
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+
         setUsers();
 
         //getting the reference of RecyclerView
@@ -124,11 +133,6 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        startService(new Intent(this, NotificationSender.class));
-    }
     private void userEdit() {
         startActivity(new Intent(this, EditUser.class));
     }
@@ -173,16 +177,21 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
 
                 //Todo: Save the image shared preference
                 editor.putString("name", name);
-               // editor.putString("picture", picture.toString());
                 editor.commit();
             }
         }
         else{
            String name = sharedPreferences.getString("name", "");
            int picture = sharedPreferences.getInt("picture", R.drawable.knight_avatar);
-           Log.v("TAG:  ",   "---------------------------");
            userTextView.setText(name);
            userImageView.setImageResource(picture);
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onEnterBackground() {
+        Intent intent = new Intent(this, NotificationSender.class);
+        intent.putExtra("previous_activity", "ListUsers");
+        startService(intent);
     }
 }

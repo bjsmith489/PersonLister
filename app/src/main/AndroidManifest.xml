@@ -20,7 +20,6 @@
             android:value="AIzaSyBcoAviXaiDukliXeh_Z5bqT7kO6T80QqQ"/>
         <activity android:name=".EditUser"></activity>
         <activity android:name=".PersonDisplayScreen" />
-        <activity android:name=".Person" />
         <activity android:name=".ListUsers" />
 
         <service android:name=".NotificationSender">

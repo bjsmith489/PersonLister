@@ -1,6 +1,10 @@
 package com.example.personlisterfinal;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,13 +19,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-public class EditUser extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class EditUser extends AppCompatActivity implements View.OnClickListener,
+        AdapterView.OnItemSelectedListener , LifecycleObserver {
 
     Button returnButton;
     EditText nameEditText;
     ImageView pictureImageView;
     Spinner dropdown;
-    Integer[] pictures = new Integer[]{R.drawable.knight_avatar, R.drawable.ninja_avatar, R.drawable.rainbow_dash_avatar};
+    Integer[] pictures = new Integer[]{ R.drawable.knight_avatar,
+                                        R.drawable.ninja_avatar,
+                                        R.drawable.rainbow_dash_avatar};
     String[] names = new String[]{"No Change","Knight", "Ninja", "Rainbow Dash"};
     boolean spinnerOptionSelected = false;
 
@@ -31,6 +38,8 @@ public class EditUser extends AppCompatActivity implements View.OnClickListener,
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user);
+
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         SharedPreferences sharedPreferences = getSharedPreferences("userSharedPreference", MODE_PRIVATE);
         returnButton = findViewById(R.id.save_and_return);
@@ -50,6 +59,7 @@ public class EditUser extends AppCompatActivity implements View.OnClickListener,
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         dropdown.setAdapter(adapter);
         dropdown.setOnItemSelectedListener(this);
+
     }
 
     @Override
@@ -97,5 +107,12 @@ public class EditUser extends AppCompatActivity implements View.OnClickListener,
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         spinnerOptionSelected = false;
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onEnterBackground() {
+        Intent intent = new Intent(this, NotificationSender.class);
+        intent.putExtra("previous_activity", "EditUser");
+        startService(intent);
     }
 }
