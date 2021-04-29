@@ -38,9 +38,8 @@ public class EditUser extends AppCompatActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user);
 
-       // ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-
         SharedPreferences sharedPreferences = getSharedPreferences("userSharedPreference", MODE_PRIVATE);
+
         returnButton = findViewById(R.id.save_and_return);
         nameEditText = findViewById(R.id.edit_name);
         pictureImageView = findViewById(R.id.user_image);

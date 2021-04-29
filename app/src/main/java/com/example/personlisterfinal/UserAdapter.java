@@ -21,7 +21,7 @@ import com.squareup.picasso.RequestCreator;
 import java.io.File;
 import java.util.ArrayList;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
+public class  UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
 
     User[] userList;
     Context context;
@@ -50,11 +50,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         User user = userList[position];
         if(!imageFile.exists()){
             Picasso.get()
-                    .load("https://robohash.org/"+position+"?set=set4")
-                    .resize(500, 500)
-                    .centerCrop()
-                    .placeholder(R.drawable.temp_image).into(
-                    picassoManager.picassoImageTarget());
+                .load("https://robohash.org/"+position+"?set=set4")
+                .resize(500, 500)
+                .centerCrop()
+                .placeholder(R.drawable.temp_image).into(
+                picassoManager.picassoImageTarget());
         }
         Picasso.get().load(imageFile).into(holder.image);
         holder.name.setText(user.getName());

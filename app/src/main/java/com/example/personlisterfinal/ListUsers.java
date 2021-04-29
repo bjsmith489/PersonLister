@@ -51,6 +51,7 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
     TextView userTextView;
     ImageView userImageView;
     CardView personCardView;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
         //getting the reference of RecyclerView
         logoutButton = findViewById(R.id.logout);
         personCardView = findViewById(R.id.cardView);
+        recyclerView = findViewById(R.id.recycler_view);
 
         logoutButton.setOnClickListener(this);
         personCardView.setOnClickListener(this);
@@ -96,14 +98,11 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
                         }
                     });
                 }
-                Log.v("TAG", "Verbose level message");
             }
         });
     }
 
     public void setRecyclerView(){
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         linearLayoutManager.setOrientation(linearLayoutManager.VERTICAL);   // Setting the orientation
         UserAdapter customAdapter = new UserAdapter(this, users);

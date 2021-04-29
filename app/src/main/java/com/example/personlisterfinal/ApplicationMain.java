@@ -17,8 +17,8 @@ import androidx.lifecycle.OnLifecycleEvent;
 public class ApplicationMain extends Application
         implements Application.ActivityLifecycleCallbacks, LifecycleOwner {
     Activity currentActivity;
-    int tracker = 0;
-
+    private int tracker = 0;
+    private boolean isActivityChangingConfigurations = false;
     public ApplicationMain(){}
     public ApplicationMain(Activity activity){
         this.currentActivity = activity;
@@ -33,12 +33,13 @@ public class ApplicationMain extends Application
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-        tracker++;
-        System.out.println("-----------------------" + tracker);
     }
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
+        if(++tracker == 1 && !isActivityChangingConfigurations){
+            System.out.println("-----------------------" + tracker);
+        }
         Log.i("Track Activity Started", "----_______-----"+activity.getLocalClassName());
 
     }
@@ -50,14 +51,14 @@ public class ApplicationMain extends Application
 
     @Override
     public void onActivityPaused(@NonNull Activity activity) {
-        tracker--;
     }
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
         Log.i("Track Activity Stopped", "----_______-----"+activity.getLocalClassName());
-        if(tracker == 0) {
-            Log.v("TAG:", "-----------ApplicationMain-----------");
+        System.out.println("-----------------------" + tracker);
+        isActivityChangingConfigurations = activity.isChangingConfigurations();
+        if (--tracker == 0 && !isActivityChangingConfigurations) {
             NotificationSender notificationSender = new NotificationSender(activity);
             notificationSender.runNotification();
         }

@@ -24,7 +24,7 @@ public class PicassoManager {
         this.imgDir = imgDir;
     }
     public Target picassoImageTarget() {
-        Log.d("picassoImageTarget", " picassoImageTarget");
+        Log.d("PicassoManager:", " picassoImageTarget");
         ContextWrapper cw = new ContextWrapper(this.context);
         File imageDir = cw.getDir(imgDir, Context.MODE_PRIVATE); // path to /data/data/yourapp/app_imageDir
         return new Target() {
@@ -61,6 +61,7 @@ public class PicassoManager {
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
                 if (placeHolderDrawable != null) {
+
                 }
             }
         };
