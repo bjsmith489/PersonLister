@@ -46,6 +46,7 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
     private Gson gson = new Gson();
     private Button logoutButton;
     private GoogleSignInClient mGoogleSignInClient;
+
     User[] users;
     TextView userTextView;
     ImageView userImageView;
@@ -55,7 +56,6 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_users);
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         setUsers();
 
@@ -70,6 +70,7 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
 
     public void onResume() {
         super.onResume();
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         setUserInformation();
     }
     public void setUsers() {
@@ -91,7 +92,7 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
                         @Override
                         public void run() {
                             users = gson.fromJson(myResponse, User[].class);
-                            displayUsers(users);
+                            setRecyclerView();
                         }
                     });
                 }
@@ -100,16 +101,6 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
         });
     }
 
-    public void displayUsers(User[] users){
-        if(users != null) {
-            ListUsers.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setRecyclerView();
-                }
-            });
-        }
-    }
     public void setRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
@@ -188,10 +179,12 @@ public class ListUsers extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onEnterBackground() {
-        Intent intent = new Intent(this, NotificationSender.class);
-        intent.putExtra("previous_activity", "ListUsers");
-        startService(intent);
+    @Override
+    public void onStop(){
+        super.onStop();
+        SharedPreferences sharedPreferences = getSharedPreferences("userSharedPreference", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("lastActivityOpen", this.getLocalClassName());
+        editor.commit();
     }
 }

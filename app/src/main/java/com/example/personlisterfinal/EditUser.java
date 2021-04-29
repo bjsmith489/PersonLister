@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 public class EditUser extends AppCompatActivity implements View.OnClickListener,
-        AdapterView.OnItemSelectedListener , LifecycleObserver {
+        AdapterView.OnItemSelectedListener {
 
     Button returnButton;
     EditText nameEditText;
@@ -32,14 +32,13 @@ public class EditUser extends AppCompatActivity implements View.OnClickListener,
     String[] names = new String[]{"No Change","Knight", "Ninja", "Rainbow Dash"};
     boolean spinnerOptionSelected = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user);
 
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+       // ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         SharedPreferences sharedPreferences = getSharedPreferences("userSharedPreference", MODE_PRIVATE);
         returnButton = findViewById(R.id.save_and_return);
@@ -109,10 +108,12 @@ public class EditUser extends AppCompatActivity implements View.OnClickListener,
         spinnerOptionSelected = false;
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onEnterBackground() {
-        Intent intent = new Intent(this, NotificationSender.class);
-        intent.putExtra("previous_activity", "EditUser");
-        startService(intent);
+    @Override
+    public void onStop(){
+        super.onStop();
+        SharedPreferences sharedPreferences = getSharedPreferences("userSharedPreference", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("lastActivityOpen", this.getLocalClassName());
+        editor.commit();
     }
 }

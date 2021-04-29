@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -26,6 +27,7 @@ public class PersonDisplayScreen extends AppCompatActivity implements View.OnCli
     Button displayMapSwitchButton;
 
     boolean isDescriptionFragmentDisplayed = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,12 +106,15 @@ public class PersonDisplayScreen extends AppCompatActivity implements View.OnCli
         return bundle;
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onEnterBackground() {
-        Intent intent = new Intent(this, NotificationSender.class);
-        intent.putExtra("previous_activity", "PersonDisplayScreen");
-        startService(intent);
+    @Override
+    public void onStop(){
+        super.onStop();
+        SharedPreferences sharedPreferences = getSharedPreferences("userSharedPreference", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("lastActivityOpen", this.getLocalClassName());
+        editor.commit();
     }
+
 
     @Override
     public void onClick(View v) {

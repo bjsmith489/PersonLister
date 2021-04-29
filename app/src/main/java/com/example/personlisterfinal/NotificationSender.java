@@ -2,42 +2,39 @@ package com.example.personlisterfinal;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
+import android.app.Activity;
+import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 
-public class NotificationSender extends Service {
+public class NotificationSender extends Service{
+
     public static final String CHANNEL_ID = "CHANNEL_RETURN_TO_APP";
-    @Override
-    public void onCreate() {
-       super.onCreate();
-    }
+    Activity context;
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public NotificationSender(Activity context){
+        this.context = context;
     }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId){
-        super.onStartCommand(intent,flags,startId);
-        Bundle bundle = intent.getExtras();
-        Intent resultIntent = getPreviousIntent(bundle.getString("previous_activity"));
+    public void runNotification(){
+        Intent resultIntent = context.getIntent();
         PendingIntent resultPendingIntent = PendingIntent.getActivity(
-                this,
+                context,
                 0,
                 resultIntent,
                 0);
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this, CHANNEL_ID)
+                new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_launcher_background)
                         .setContentTitle("Person Lister")
                         .setContentText("Don't forget about me...")
@@ -46,7 +43,7 @@ public class NotificationSender extends Service {
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true)
                         .setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context. NOTIFICATION_SERVICE ) ;
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION. SDK_INT >= android.os.Build.VERSION_CODES. O ) {
             int importance = NotificationManager. IMPORTANCE_HIGH ;
             NotificationChannel notificationChannel = new NotificationChannel(
@@ -60,27 +57,37 @@ public class NotificationSender extends Service {
             builder.setChannelId( CHANNEL_ID ) ;
             mNotificationManager.createNotificationChannel(notificationChannel) ;
         }
-        mNotificationManager.notify(( int ) System. currentTimeMillis (), builder.build()) ;
-        return flags;
+        mNotificationManager.notify(0, builder.build()) ;
     }
 
-    public Intent getPreviousIntent(String id){
+    public Intent getPreviousIntent(){
+        ContextWrapper wrapper = new ContextWrapper(context.getApplicationContext());
+        SharedPreferences sharedPreferences = wrapper.getSharedPreferences("userSharedPreference", context.MODE_PRIVATE);
+        String id = sharedPreferences.getString("lastActivityOpen", "ListUsers");
         final String LIST_USERS_ID = "ListUsers";
         final String EDIT_USER_ID = "EditUser";
         final String PERSON_DISPLAY_ID = "PersonDisplayScreen";
-        Intent intent = new Intent(this, ListUsers.class);
+
+        Intent intent = new Intent(context, ListUsers.class);
 
         switch(id){
             case LIST_USERS_ID:
-                intent = new Intent(this, ListUsers.class);
+                intent = new Intent(context, ListUsers.class);
                 break;
             case EDIT_USER_ID:
-                intent = new Intent(this, EditUser.class);
+                intent = new Intent(context, EditUser.class);
                 break;
             case PERSON_DISPLAY_ID:
-                intent = new Intent(this, PersonDisplayScreen.class);
+                intent = new Intent(context, PersonDisplayScreen.class);
                 break;
         }
         return intent;
+    }
+
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 }
