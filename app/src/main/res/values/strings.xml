@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">PersonListerFinal</string>
+    <string name="user">User</string>
+    <string name="url">https://jsonplaceholder.typicode.com/users</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cancel">Cancel</string>
+    <string name="proceed">Proceed</string>
+    <string name="confirm_camera">Permission to use the camera?</string>
+    <string name="imgDir">imageDir</string>
+</resources>
